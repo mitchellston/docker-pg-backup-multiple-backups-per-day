@@ -50,7 +50,7 @@ jobs:
           echo ${{ secrets.DOCKERHUB_PASSWORD }} > /tmp/credentials.txt
           cat /tmp/credentials.txt | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "'${{ secrets.DOCKERHUB_USERNAME }}'", "password": "'${{ secrets.DOCKERHUB_PASSWORD }}'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
-          check_image=$(curl --silent -f --head -lL https://hub.docker.com/v2/repositories/kartoza/pg-backup/tags/${{ matrix.postgresMajorVersion }}-${{ matrix.postgisMajorVersion }}.${{ matrix.postgisMinorRelease }}/ | head -n 1 | cut -d ' ' -f2) >> $GITHUB_OUTPUT
+          check_image=$(curl --silent -f --head -lL https://hub.docker.com/v2/repositories/mitchellston/docker-pg-backup-multiple-backups-per-day/tags/${{ matrix.postgresMajorVersion }}-${{ matrix.postgisMajorVersion }}.${{ matrix.postgisMinorRelease }}/ | head -n 1 | cut -d ' ' -f2) >> $GITHUB_OUTPUT
           rm /tmp/credentials.txt
 
       - name: Build prod image
@@ -62,9 +62,9 @@ jobs:
           file: Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_REPO }}/pg-backup
-            ${{ steps.check_hub_image_exists.outputs.check_image == 200 && format('{0}/pg-backup:{1}-{2}.{3}', secrets.DOCKERHUB_REPO,  matrix.postgresMajorVersion, matrix.postgisMajorVersion, matrix.postgisMinorRelease) || null}}
-            ${{ secrets.DOCKERHUB_REPO }}/pg-backup:${{ matrix.postgresMajorVersion }}-${{ matrix.postgisMajorVersion }}.${{ matrix.postgisMinorRelease }}--v${{ steps.current_date.outputs.formatted }}
+            ${{ secrets.DOCKERHUB_REPO }}/docker-pg-backup-multiple-backups-per-day
+            ${{ steps.check_hub_image_exists.outputs.check_image == 200 && format('{0}/docker-pg-backup-multiple-backups-per-day:{1}-{2}.{3}', secrets.DOCKERHUB_REPO,  matrix.postgresMajorVersion, matrix.postgisMajorVersion, matrix.postgisMinorRelease) || null}}
+            ${{ secrets.DOCKERHUB_REPO }}/docker-pg-backup-multiple-backups-per-day:${{ matrix.postgresMajorVersion }}-${{ matrix.postgisMajorVersion }}.${{ matrix.postgisMinorRelease }}--v${{ steps.current_date.outputs.formatted }}
           build-args: |
             POSTGRES_MAJOR_VERSION=${{ matrix.postgresMajorVersion }}
             POSTGIS_MAJOR_VERSION=${{ matrix.postgisMajorVersion }}
