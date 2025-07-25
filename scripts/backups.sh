@@ -3,7 +3,7 @@
 source /backup-scripts/pgenv.sh
 
 # Env variables
-MYDATE=$(date +%d-%B-%Y)
+MYDATE=$(date +%d-%B-%Y-%s)
 MONTH=$(date +%B)
 YEAR=$(date +%Y)
 MYBASEDIR=/${BUCKET}
